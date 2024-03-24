@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homework
+  labels:
+    name: nginx
+  namespace: homework
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      serviceAccountName: monitoring
+      containers:
+        - name: nginx
+          image: nginx:latest
+          command: ["/bin/sh","-c"]
+          args: ["sed -i 's/listen .*/listen 8000;/g ; s,root .*,root /homework;,g' /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"]
+          ports:
+          - containerPort: 8000
+          volumeMounts:
+          - name: workdir
+            mountPath: "/homework"
+          lifecycle:
+            preStop:
+              exec:
+                command: ["rm", "-f", "/homework/index.html"]
+          readinessProbe:
+            httpGet:
+              path: /index.html
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      initContainers:
+        - name: install
+          image: busybox:1.28
+          command: ["wget", "-O", "/init/index.html", "http://info.cern.ch"]
+          volumeMounts:
+          - name: workdir
+            mountPath: "/init"
+      dnsPolicy: Default
+      volumes:
+      - name: workdir
+        emptyDir: {}
+      nodeSelector:
+        homework: "true"
+
