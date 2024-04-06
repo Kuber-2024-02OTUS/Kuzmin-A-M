@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.volumes.configmap.name }}
+  namespace: {{ .Values.namespace }}
+data:
+  file: |
+    key1=value1
+    key2=value2
+    key3=value3
+    key4=value4
+
