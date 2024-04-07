@@ -1,0 +1,91 @@
+namespace: homework
+
+replicaCount: 3
+
+image:
+  name: nginx
+  tag: latest
+
+container:
+  name: nginx
+  port:
+    name: webapp
+    containerPort: 8000
+
+initContainer:
+  name: install
+  image: busybox
+  tag: 1.28
+
+roles:
+  nsadmin:
+    name: ns-admin-role
+  monitoring:
+    name: metricsro-role
+
+roleBindings:
+  nsadmin:
+    name: ns-admin-rb
+  monitoring:
+    name: monitoring-rb
+
+serviceAccount:
+  nsadmin:
+    name: cd
+  monitoring:
+    name: monitoring
+
+secrets:
+  nsadmin:
+    metadata:
+      name: token-cd
+      annotations:
+        kubernetes.io/service-account.name: cd
+
+selectorLabels:
+  app: nginx
+
+deployment:
+  name: hw6
+  strategy:
+    type: RollingUpdate
+    maxUnavailable: 1
+
+service:
+  protocol: TCP
+  name: svc-hw6
+  type: ClusterIP
+  port:
+    num: 80
+    name: http
+  targetPort: webapp
+
+ingress:
+  enabled: true
+  name: ingress-hw6
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+  host: homework.otus
+
+readinessProbe:
+  enabled: true
+  httpGet:
+    path: /
+    port: http
+
+volumes:
+  pvName: pv-hw6
+  pvcName: pvc-hw6
+  pvCMName: pvcm-hw6
+  configmap:
+    name: cm-hw6
+    items:
+      - key: file
+        path: file
+
+nodeSelector:
+  homework: "true"
+
+readynessProbe:
+  enabled: true
+
