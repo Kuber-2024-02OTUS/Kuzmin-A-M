@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homework
+  labels:
+    name: nginx-custom
+  namespace: homework
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-custom
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: nginx-custom
+    spec:
+      containers:
+        - name: nginx
+          image: almkuzmin/nginx-custom:v0.2
+          imagePullPolicy: Never
+          command: ["/bin/sh","-c"]
+          args: ["sed -i 's,root .*,root /homework;,g' /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"]
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - name: workdir
+              mountPath: "/homework"
+          lifecycle:
+            preStop:
+              exec:
+                command: ["rm", "-f", "/homework/index.html"]
+          readinessProbe:
+            httpGet:
+              path: /index.html
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+        - name: exporter
+          image: nginx/nginx-prometheus-exporter:1.1.0
+          args: ['--nginx.scrape-uri', 'http://127.0.0.1:8000/metrics']
+      initContainers:
+        - name: install
+          image: busybox:1.28
+          command: ["wget", "-O", "/init/index.html", "http://info.cern.ch"]
+          volumeMounts:
+            - name: workdir
+              mountPath: "/init"
+      dnsPolicy: Default
+      volumes:
+      - name: workdir
+        emptyDir: {}
+

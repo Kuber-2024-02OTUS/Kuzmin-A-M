@@ -1,0 +1,13 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: app-hw8
+  labels:
+    app: nginx-custom
+  namespace: homework
+spec:
+  selector:
+    matchLabels:
+      app: nginx-custom
+  endpoints:
+  - port: http
