@@ -1,0 +1,7 @@
+image:
+  tag: "8.3.3"
+nodeSelector: { infraNode: 'true' }
+tolerations: [{ key: "node-role", operator: "Equal", value: "infra" }]
+adminUser: admin
+adminPassword: strongpassword
+
