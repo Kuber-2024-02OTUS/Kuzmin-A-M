@@ -1,0 +1,23 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-hw7
+  labels:
+    name: mysql-op-hw7
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-op-hw7
+  template:
+    metadata:
+      labels:
+        app: mysql-op-hw7
+    spec:
+      containers:
+        - name: mysql-operator-hw7
+          image: roflmaoinmysoul/mysql-operator:1.0.0
+          imagePullPolicy: Always
+      serviceAccountName: sa-hw7
+

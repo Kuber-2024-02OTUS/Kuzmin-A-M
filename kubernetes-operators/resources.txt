@@ -1,0 +1,22 @@
+NAME                                     STATUS   VOLUME            CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+persistentvolumeclaim/mysql-cr-hw7-pvc   Bound    mysql-cr-hw7-pv   1Gi        RWO            standard       4m59s
+
+NAME                               CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                      STORAGECLASS   REASON   AGE
+persistentvolume/mysql-cr-hw7-pv   1Gi        RWO            Retain           Bound    default/mysql-cr-hw7-pvc   standard                4m59s
+
+NAME                   TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)    AGE
+service/kubernetes     ClusterIP   10.96.0.1    <none>        443/TCP    105d
+service/mysql-cr-hw7   ClusterIP   None         <none>        3306/TCP   4m59s
+
+NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/mysql-cr-hw7   1/1     1            1           4m59s
+
+NAME                                READY   STATUS    RESTARTS   AGE
+pod/mysql-cr-hw7-557db85fb4-h6v85   1/1     Running   0          4m59s
+
+NAME                               AGE
+mysql.otus.homework/mysql-cr-hw7   4m59s
+
+NAME                     SECRETS   AGE
+serviceaccount/default   0         105d
+serviceaccount/sa-hw7    0         6m34s
