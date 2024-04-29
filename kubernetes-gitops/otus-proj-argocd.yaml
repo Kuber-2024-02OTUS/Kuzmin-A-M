@@ -1,0 +1,43 @@
+- metadata:                                                                                                                                                                       [0/1449]
+    creationTimestamp: "2024-04-29T21:07:19Z"
+    generation: 6
+    managedFields:
+    - apiVersion: argoproj.io/v1alpha1
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:spec:
+          .: {}
+          f:clusterResourceBlacklist: {}
+          f:clusterResourceWhitelist: {}
+          f:destinations: {}
+          f:namespaceResourceBlacklist: {}
+          f:namespaceResourceWhitelist: {}
+          f:sourceRepos: {}
+        f:status: {}
+      manager: argocd-server
+      operation: Update
+      time: "2024-04-29T21:30:21Z"
+    name: otus
+    namespace: argocd
+    resourceVersion: "16381"
+    uid: 19906411-ae3e-4778-9f24-409c02058b92
+  spec:
+    clusterResourceBlacklist:
+    - group: '*'
+      kind: '*'
+    clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+    destinations:
+    - name: '*'
+      namespace: '*'
+      server: https://kubernetes.default.svc
+    namespaceResourceBlacklist:
+    - group: '*'
+      kind: '*'
+    namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+    sourceRepos:
+    - https://github.com/Kuber-2024-02OTUS/Kuzmin-A-M
+  status: {}

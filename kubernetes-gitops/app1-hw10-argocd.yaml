@@ -1,0 +1,12 @@
+project: otus
+source:
+  repoURL: 'https://github.com/Kuber-2024-02OTUS/Kuzmin-A-M.git'
+  path: kubernetes-networks
+  targetRevision: HEAD
+destination:
+  server: 'https://kubernetes.default.svc'
+  namespace: homework
+syncPolicy:
+  syncOptions:
+    - CreateNamespace=true
+
