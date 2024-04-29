@@ -1,0 +1,17 @@
+project: otus
+source:
+  repoURL: 'https://github.com/Kuber-2024-02OTUS/Kuzmin-A-M.git'
+  path: kubernetes-templating/hw6
+  targetRevision: HEAD
+  helm:
+    values: 'replicaCount: 2'
+destination:
+  server: 'https://kubernetes.default.svc'
+  namespace: HomeworkHelm
+syncPolicy:
+  automated:
+    prune: true
+    selfHeal: true
+  syncOptions:
+    - CreateNamespace=true
+

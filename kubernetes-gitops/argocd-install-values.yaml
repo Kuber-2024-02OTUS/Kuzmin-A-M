@@ -1,0 +1,25 @@
+global:
+    nodeSelector: { infraNode: 'true' }
+    tolerations: [{ key: "node-role", operator: "Equal", value: "infra" }]
+controller:
+    nodeSelector: { infraNode: 'true' }
+    tolerations: [{ key: "node-role", operator: "Equal", value: "infra" }]
+dex:
+    nodeSelector: { infraNode: 'true' }
+    tolerations: [{ key: "node-role", operator: "Equal", value: "infra" }]
+redis:
+    nodeSelector: { infraNode: 'true' }
+    tolerations: [{ key: "node-role", operator: "Equal", value: "infra" }]
+server:
+    nodeSelector: { infraNode: 'true' }
+    tolerations: [{ key: "node-role", operator: "Equal", value: "infra" }]
+repoServer:
+    nodeSelector: { infraNode: 'true' }
+    tolerations: [{ key: "node-role", operator: "Equal", value: "infra" }]
+applicationSet:
+    nodeSelector: { infraNode: 'true' }
+    tolerations: [{ key: "node-role", operator: "Equal", value: "infra" }]
+notifications:
+    nodeSelector: { infraNode: 'true' }
+    tolerations: [{ key: "node-role", operator: "Equal", value: "infra" }]
+
