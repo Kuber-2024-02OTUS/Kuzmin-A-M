@@ -6,11 +6,16 @@
 ## В процессе сделано:
  - В namespace longhorn из helm-чарта longhorn/longhorn установлено хранилище данных Longhorn. Перед этим воркер-ноды были помечены лейблом node-role.kubernetes.io/worker=true.
  - В namespace consul установлен consul из helm-чарта https://github.com/hashicorp/consul-k8s.git с параметрами 3 реплики для сервера, сохранен файл с переменными (values-consul.yaml).
-
- - Создан манифест pvc.yaml, описывающий PersistentVolumeClaim, запрашивающий хранилище с storageClass по-умолчанию
- - Создан манифест cm.yaml для объекта типа configMap
- - В манифесте deployment.yaml изменена спецификация volume типа emptyDir, который монтируется в init и основной контейнер, на pvc, созданный в предыдущем пункте
- - В манифесте deployment.yaml добавлено монтирование ранее созданного configMap как volume к основному контейнеру пода в директорию /homework/conf, так, чтобы его содержимое можно было получить, обратившись по url /conf/file
+ - В namespace vault установлен vault из helm-чарта https://github.com/hashicorp/vault-helm.git с включенными ui и режимом ha, сохранен файл с переменными (values-vault.yaml).
+ - Выполнена инициализиция и распечатывание волта.
+ - Создано хранилище секретов otus.
+ - В namespace vault создан serviceAccount с именем vault-auth и ClusterRoleBinding для него с ролью system:auth-delegator (serviceAccount.yml).
+ - В Vault включена авторизация auth/kubernetes с токеном от vault-auth.
+ - Создана и применена политика otus-policy для секретов /otus/cred (otus-policy.hcl).
+ - В vault создана роль auth/kubernetes/role/otus с использованием sa vault-auth (namespace vault) и политикой otus-policy.
+ - В namespace vault установлен External secrets operator из helm-чарта external-secrets/external-secrets.
+ - Создан и применен манифест crd объекта SecretStore (externalSecrets.yml).
+ - Создан и применен манифест crd объекта ExternalSecret (externalSecrets.yml).
 
 
 ## Как запустить проект:
@@ -40,14 +45,12 @@
 
  - `kubectl -n vault exec -it vault-0 -- vault auth enable kubernetes`
 
+ - `kubectl -n vault exec -it vault-0 -- vault policy write otus-policy - <<<$(cat otus-policy.hcl)`
+ - `kubectl -n vault exec -it vault-0 -- vault write auth/kubernetes/role/otus bound_service_account_names=vault-auth bound_service_account_namespaces=vault policies=default,otus-policy ttl=24h`
  - `TOKEN=$(kubectl -n vault get secret vault-auth-secret -o jsonpath='{.data.token}' | base64 -d)`
  - `CA_CERT=$(kubectl config view --raw -o jsonpath='{.clusters[0].cluster.certificate-authority-data}' | base64 -d)`
  - `HOST=$(kubectl config view --raw --output='jsonpath={.clusters[0].cluster.server}')`
  - `kubectl -n vault exec -it vault-0 -- vault write auth/kubernetes/config token_reviewer_jwt=$TOKEN kubernetes_host=$HOST kubernetes_ca_cert="$CA_CERT" disable_local_ca_jwt="true"`
-
-
- - `kubectl -n vault exec -it vault-0 -- vault policy write otus-policy - <<<$(cat otus-policy.hcl)`
- - `kubectl -n vault exec -it vault-0 -- vault write auth/kubernetes/role/otus bound_service_account_names=vault-auth bound_service_account_namespaces=vault policies=default,otus-policy ttl=24h`
 
  - `helm repo add external-secrets https://charts.external-secrets.io`
  - `helm pull --untar external-secrets/external-secrets`
