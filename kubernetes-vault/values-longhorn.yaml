@@ -1,0 +1,9 @@
+global:
+  nodeSelector: 
+    node-role.kubernetes.io/worker: "true"
+defaultSettings:
+  defaultDataPath: /storage
+  defaultDataLocality: best-effort
+  replicaSoftAntiAffinity: true
+  replicaAutoBalance: best-effort
+
